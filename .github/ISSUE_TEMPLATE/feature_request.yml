@@ -1,0 +1,22 @@
+name: Feature request
+description: Suggest an improvement to ABF Launcher.
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would you like to improve?
+      description: Describe the situation and why the current behaviour gets in your way.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Suggested behaviour
+      description: Explain how it should work with a TV remote.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Examples or other context

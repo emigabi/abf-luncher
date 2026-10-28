@@ -1,0 +1,36 @@
+name: Bug report
+description: Report a reproducible problem with ABF Launcher.
+title: "[Bug]: "
+body:
+  - type: input
+    id: device
+    attributes:
+      label: Device and Android version
+      placeholder: "Box R 4K Plus, Android TV 14"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: ABF Launcher version and APK
+      placeholder: "1.0.0, armeabi-v7a"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include relevant launcher settings and remote buttons used.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or relevant logs
+      description: Share only information you want to make public.

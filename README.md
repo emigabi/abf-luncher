@@ -1,72 +1,88 @@
-# ABF Launcher
+<p align="center">
+  <img src="docs/images/abf/hero.svg" alt="ABF Launcher — a cleaner home for Android TV" width="100%">
+</p>
 
-Current ABF Launcher version: **1.0.0**.
+<p align="center">
+  <strong>Favourites up top. Everything else a tap away.</strong><br>
+  A clean, remote-friendly Android TV launcher based on Arc Launcher.
+</p>
 
-A personal customization of [Arc Launcher](https://github.com/meddouribadis/arclauncher), based on the upstream Arc Launcher release 1.2.0, commit `58fca01519b5884ad6aa3c550019d6eb60818be4`.
+<p align="center">
+  <a href="https://github.com/emigabi/abf-luncher/releases/tag/v1.0.0"><img alt="Release 1.0.0" src="https://img.shields.io/badge/release-1.0.0-536de8?style=flat-square"></a>
+  <img alt="Made for Android TV" src="https://img.shields.io/badge/platform-Android_TV-11a8b7?style=flat-square">
+  <a href="LICENSE"><img alt="GPL 3.0 or later" src="https://img.shields.io/badge/licence-GPL--3.0--or--later-7783a8?style=flat-square"></a>
+</p>
 
-## Acknowledgements
+<p align="center">
+  <a href="https://github.com/emigabi/abf-luncher/releases/latest"><strong>Download APKs</strong></a> ·
+  <a href="docs/INSTALLATION.md">Installation guide</a> ·
+  <a href="https://github.com/emigabi/abf-luncher/issues/new/choose">Report an issue</a>
+</p>
 
-[Arc Launcher — original repository](https://github.com/meddouribadis/arclauncher)
+## Your TV, with less in the way
 
-Thank you to **meddouribadis** for creating and sharing Arc Launcher, the open-source foundation of this customized launcher.
+ABF Launcher keeps your favourite apps directly below the status bar. Open **All apps** beside Settings and Wi-Fi when you need the rest, then press **Back** to return to a quieter Home screen.
 
-[CleanYourTV — original repository](https://github.com/Gathin23/cleanyourtv)
+| Pinned Favourites | Apps on demand | Watch Next |
+| --- | --- | --- |
+| Adjust icon size, fill each row automatically and scroll through additional favourites. | Show the remaining apps in a separate scrolling grid while Favourites stay in place. | See the source app on each tile. Opening All apps hides Watch Next; closing it brings it back when enabled. |
 
-Thank you to **Gathin23** for creating and sharing CleanYourTV, which helped guide this Android TV cleanup and launcher setup.
+Wallpaper rotation, remote navigation and the date/time controls from the Arc Launcher foundation remain available. Favourite size choices are **50%, 67%, 75% and 100%**; the default is 67%.
 
-## Changes
+## See it on a real TV
 
-- Adjustable favourite card size: 50%, 67%, 75%, or 100%; default 67% of the original width and height.
-- Fill each row before wrapping, with up to three visible rows and scrolling for additional favourites.
-- Remote navigation and reordering follow the selected column count.
-- Wallpaper rotation stays enabled while the wallpaper source line is hidden.
-- Favourites sit directly below the status bar, above Watch Next.
-- An All apps tab button beside Settings and Wi-Fi shows or hides non-favourite apps.
-- Other apps appear in a bottom-aligned, lazy scrolling grid while Favourites stay at the top.
-- Opening All apps temporarily hides Watch Next; closing it or pressing Back restores Watch Next if enabled.
-- Watch Next tiles show the source app name at the top.
-- Date format presets include `E MMMd, y` (for example, `Sat Jan17, 2026`).
-- Separate app package `com.omeda.arc.clean`, labelled ABF Launcher. The upstream self-updater is disabled in the release build command.
+These are screenshots captured from a **Box R 4K Plus running Android TV 14**, using ABF Launcher 1.0.0.
 
-Change size in **Settings → Interface → Appearance → Favourites icon size**.
+**Home — Favourites directly below the status bar**
 
-## Downloads
+![ABF Launcher Home with nine favourite apps and the All apps button beside Wi-Fi](docs/images/abf/home.png)
 
-[Latest release](https://github.com/emigabi/abf-luncher/releases/latest)
+**All apps — the remaining apps scroll below the fixed Favourites pane**
 
-- **ARMv7 (`armeabi-v7a`)**: use this for the Box R 4K Plus used in this project.
-- **ARM64 (`arm64-v8a`)**: for devices whose Android installation supports 64-bit apps.
+![ABF Launcher with the All apps grid expanded beneath Favourites](docs/images/abf/all-apps.png)
 
-Choose the APK matching the Android app ABI, rather than the processor marketing specification.
+## Download
 
-## Device verification
+The current app release is **1.0.0**. [View the release notes, source ZIP and checksums](https://github.com/emigabi/abf-luncher/releases/tag/v1.0.0).
 
-The ARMv7 (`armeabi-v7a`) build was installed and launched on a Homatics Box R 4K Plus running Android TV 14, preserving existing favourites and wallpaper settings. This device uses 32-bit Android app ABIs despite its 64-bit processor. ARM64 builds are provided for compatible devices; they have not been tested on a physical ARM64 device.
+| APK | Use it for |
+| --- | --- |
+| [ARMv7 · armeabi-v7a](https://github.com/emigabi/abf-luncher/releases/download/v1.0.0/abf-launcher-1.0.0-armeabi-v7a.apk) | The Box R 4K Plus used in this project, and Android installations supporting 32-bit ARM apps |
+| [ARM64 · arm64-v8a](https://github.com/emigabi/abf-luncher/releases/download/v1.0.0/abf-launcher-1.0.0-arm64-v8a.apk) | Android installations supporting 64-bit ARM apps; physical device testing is welcome |
 
-All 46 focused layout/navigation/settings tests passed, including an 80-app grid traversed by remote keys. Screenshots pulled from the TV verified the All apps button, expanded grid, remote scrolling to the final app, Favourites staying fixed at the top, and Back closing the grid with Watch Next restored. Both APKs passed package, app-label, signature, native ABI and Flutter ELF architecture checks. The corrected ABF banner was extracted from both APKs and visually verified. A screenshot pulled from the TV also confirmed that the installed shortcut displays the corrected ABF launcher artwork. Three-row favourite layouts are covered by widget tests.
+Choose the **Android app ABI**, rather than the processor's marketing specification. The tested Box R 4K Plus has a 64-bit processor but runs 32-bit Android apps.
 
-## Build
+To get started, download the matching APK, transfer it to your TV, install it and open **ABF Launcher**. Updating an existing official ABF installation in place preserves its settings and Favourites. Changing the default Home app depends on your TV's firmware.
 
-Use Flutter **3.41.9**, JDK **17**, Android SDK platform **36**, and build-tools **36.0.0**. Install the SDK command-line tools, accept their licences and put Flutter on PATH. Keep the dependency versions in `pubspec.lock`.
+**[Read the installation and update guide →](docs/INSTALLATION.md)**
 
-Supply your own release signing key outside this repository through these environment variables:
+## Tested, with clear limits
 
-- `ARC_CLEAN_KEYSTORE`: absolute path to the keystore.
-- `SIGNING_KEYSTORE_PASSWORD`, `SIGNING_KEY_ALIAS`, `SIGNING_KEY_PASSWORD`.
+- **46 focused tests passed**, including remote navigation through an 80-app grid, independent scrolling, icon sizes, and Watch Next returning after the drawer closes.
+- **Checked on a real Box R 4K Plus:** opening and closing All apps, scrolling to the last app, Favourites staying pinned, and Watch Next returning.
+- **Both APKs checked:** package name, app label, release signature, native ABI and Flutter library architecture. Published checksums match the tested files.
+- **ARM64 coverage:** built and checked as an artifact; not yet tested on a physical ARM64 device.
 
-The original signing key is private. A build signed with a different key cannot update an existing installation signed by the original key. Preserve app data before changing installations.
+See the [changelog](CHANGELOG.md) for the changes in this release. Date presets include `E MMMd, y`, for example `Sat Jan17, 2026`.
 
-Run `bash scripts/build-release.sh`. The script generates localisations and mocks, runs the focused checks and builds `1.0.0` / base build number `4134`, ARMv7 and ARM64, with the upstream updater disabled. Flutter assigns ABI-specific version codes: **5134 for ARMv7** and **6134 for ARM64**. To release a future update, increase the base build number.
+## Help improve ABF
 
-APK outputs:
+Trying it on another TV? [Report a bug or suggest a feature](https://github.com/emigabi/abf-luncher/issues/new/choose) with your device model, Android version, ABF version and APK architecture. Feedback on device compatibility and D-pad navigation is especially useful.
 
-- `build/app/outputs/apk/github/release/abf-launcher-armeabi-v7a-release.apk`
-- `build/app/outputs/apk/github/release/abf-launcher-arm64-v8a-release.apk`
+Want to contribute code? Read [CONTRIBUTING.md](CONTRIBUTING.md) and the [build guide](docs/BUILDING.md). ABF uses Flutter 3.41.9, JDK 17 and Android SDK 36. Release builds are currently produced locally.
 
-The package ID stays `com.omeda.arc.clean` so a release signed with the original key updates Arc Clean in place, preserving its settings and favourites.
+## Built on open source
 
-## Provenance and licence
+[**Arc Launcher — original repository**](https://github.com/meddouribadis/arclauncher)
 
-This modification retains the upstream GPL-3.0-or-later licence and copyright notices; see [LICENSE](LICENSE). Arc Launcher derives from LTvLauncher and FLauncher. Upstream acknowledgements and historical documentation are preserved in [README.upstream.md](README.upstream.md).
+Thank you to **meddouribadis** for creating and sharing Arc Launcher, the open-source foundation of ABF Launcher.
 
-This is an independent customization. The original project's Play Store links, downloader codes and releases refer to upstream Arc Launcher. Its release and Play publishing workflows are omitted from this snapshot; builds are local.
+[**CleanYourTV — original repository**](https://github.com/Gathin23/cleanyourtv)
+
+Thank you to **Gathin23** for creating and sharing CleanYourTV, which helped guide the Android TV cleanup and launcher setup behind this project.
+
+Arc Launcher derives from LTvLauncher and FLauncher. ABF is an independent customization based on Arc Launcher 1.2.0, commit `58fca01519b5884ad6aa3c550019d6eb60818be4`. Original credits and historical documentation are preserved in [README.upstream.md](README.upstream.md).
+
+The package ID stays `com.omeda.arc.clean` for update compatibility. The inherited upstream self-updater is disabled in ABF release builds; get ABF updates from this repository's Releases page.
+
+[GNU GPL-3.0-or-later](LICENSE) · Original copyright notices retained.

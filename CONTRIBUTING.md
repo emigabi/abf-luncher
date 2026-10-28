@@ -1,118 +1,40 @@
-# Contributing to ArcLauncher
+# Contributing to ABF Launcher
 
-Thank you for your interest in contributing to ArcLauncher! We welcome contributions from everyone.
+Device reports, reproducible bug reports, translations and focused code changes are welcome.
 
-Please review this guide before submitting an issue or pull request.
+## Report a problem
 
----
+Use the [bug report form](https://github.com/emigabi/abf-luncher/issues/new?template=bug_report.yml). Include your TV model, Android version, ABF version, APK architecture, relevant settings and the remote buttons needed to reproduce it. Describe what you expected and what happened instead.
 
-## Code of Conduct
+Check existing issues first. For a proposed feature, explain the problem it solves and how it would work with a TV remote.
 
-This project and everyone participating in it is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+## Work on the code
 
----
+1. Fork `emigabi/abf-luncher` and create a branch for your change.
+2. Follow the [build and development guide](docs/BUILDING.md) using Flutter 3.41.9 and the checked-in dependency lockfile.
+3. Keep the change focused and preserve upstream copyright and licence notices.
+4. Run the focused tests and any additional checks relevant to your change.
+5. For UI changes, check D-pad navigation and include a screenshot or recording. State whether you used a real TV or an emulator.
+6. Open a pull request explaining the problem, resulting behaviour and validation.
 
-## Getting Started
+We use descriptive commit and pull-request titles. Conventional Commit prefixes such as `fix:`, `feat:` and `docs:` are welcome, but this repository currently has no automated commit-title or release-publishing workflow.
 
-### Development Setup
+## Useful checks
 
-1. **Prerequisites**:
-   - [Flutter](https://docs.flutter.dev/get-started/install) (or [FVM](https://fvm.app/) using the version specified in `.fvmrc`)
-   - Android Studio / Android SDK configured for Android TV development
+After generating localisations and mocks as described in the build guide:
 
-2. **Clone the repository**:
-   ```bash
-   git clone https://github.com/meddouribadis/arclauncher.git
-   cd arclauncher
-   ```
-
-3. **Install dependencies**:
-   ```bash
-   flutter pub get
-   # or with fvm:
-   fvm flutter pub get
-   ```
-
-4. **Run analysis and tests**:
-   ```bash
-   flutter analyze
-   flutter test
-   ```
-
----
-
-## Commit & PR Title Guidelines
-
-This project strictly follows the **[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)** specification. Both commit messages and Pull Request titles are automatically checked in CI using `commitlint` and GitHub Actions.
-
-### Format
-
-```text
-<type>(<optional scope>): <description>
-
-[optional body]
-
-[optional footer(s)]
+```bash
+flutter test --no-pub test/widgets/favorite_dock_test.dart test/widgets/focus_aware_app_bar_test.dart test/providers/settings_service_test.dart
 ```
 
-### Allowed Types
+The release script lists the focused analyzer targets. Run relevant analysis when changing other code too. A passing widget test does not replace checking TV remote focus and scrolling on a device or emulator.
 
-| Type | Description |
-| :--- | :--- |
-| `feat` | A new feature |
-| `fix` | A bug fix |
-| `improvement` | An improvement to an existing feature |
-| `perf` | A code change that improves performance |
-| `refactor` | A code change that neither fixes a bug nor adds a feature |
-| `docs` | Documentation changes only |
-| `style` | Formatting, whitespace, missing semicolons, etc. (no production code logic change) |
-| `test` | Adding missing tests or correcting existing tests |
-| `build` | Changes that affect the build system or external dependencies |
-| `ci` | Changes to CI configuration files and scripts |
-| `chore` | Other changes that don't modify `src` or test files |
-| `revert` | Reverts a previous commit |
+## Signing and compatibility
 
-### Scopes (Optional)
+Keep signing keys, passwords, local device backups and private account information out of commits. Release signing keys are held outside the repository. A build signed with your own key cannot update a release signed with the project's key.
 
-Scopes describe the section of the codebase affected, for example:
-- `(ui)`
-- `(settings)`
-- `(apps)`
-- `(wallpaper)`
-- `(deps)`
+Please discuss package-ID changes, data migrations and default-Home behaviour in an issue before implementing them, because they affect existing installations.
 
-### Examples
+## Attribution
 
-**Good Examples:**
-- `feat(ui): add support for custom grid spacing`
-- `fix(apps): resolve crash when launching uninstalled package`
-- `docs: add installation instructions for Android TV 12+`
-- `perf(database): optimize query performance when loading app list`
-- `chore(deps): bump intl from 0.18.0 to 0.19.0`
-
-**Bad Examples:**
-- `updated styles` *(Missing type and format)*
-- `Fix bug` *(Capitalized, no type format)*
-- `WIP: working on settings` *(Not a valid conventional commit)*
-
-### Breaking Changes
-
-Indicate breaking changes by adding an exclamation mark `!` after the type/scope or by adding `BREAKING CHANGE:` in the commit footer:
-
-```text
-feat(settings)!: redesign settings schema requiring database migration
-```
-
----
-
-## Pull Request Process
-
-1. **Fork the repo** and create your branch from `main`:
-   ```bash
-   git checkout -b feat/my-new-feature
-   ```
-2. **Make your changes** following the project's formatting and analysis rules (`flutter analyze`).
-3. **Commit your changes** using Conventional Commits.
-4. **Push to your fork** and open a Pull Request.
-5. **Ensure your PR title** follows the Conventional Commits format (e.g. `feat(ui): add grid layout options`).
-6. **Verify CI checks pass** before requesting review.
+ABF Launcher builds on [Arc Launcher](https://github.com/meddouribadis/arclauncher), which derives from LTvLauncher and FLauncher. [CleanYourTV](https://github.com/Gathin23/cleanyourtv) helped guide the original device setup. Preserve their credits when contributing or redistributing.

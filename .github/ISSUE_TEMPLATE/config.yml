@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Installation guide
+    url: https://github.com/emigabi/abf-luncher/blob/main/docs/INSTALLATION.md
+    about: Choose an APK, install the launcher and set up your Home screen.
