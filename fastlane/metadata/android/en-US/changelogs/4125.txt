@@ -1,0 +1,5 @@
+- Added Watch Next immersive mode with hero backdrop and action button.
+- Added Watch Next settings panel with app filtering, image filtering, and limit options.
+- Added Vietnamese localization.
+- Performance optimizations for backdrop blur and image caching.
+- Automated VirusTotal security scanning for release builds.

@@ -1,0 +1,5 @@
+- Redesigned settings side panel with modern dark glass styling and accent glow.
+- New compact toggle switches with adaptive contrast against high-luminance accents.
+- Smooth sequential submenu transitions eliminating section overlap and ghosting.
+- Snappy 90ms focus transitions for responsive TV D-pad navigation.
+- Updated unit and widget test suite for modern architecture.

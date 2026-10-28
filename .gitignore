@@ -1,0 +1,115 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Web related
+lib/generated_plugin_registrant.dart
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/app/build
+/android/app/.cxx
+/android/build
+
+android/app/google-services.json
+android/app/upload-keystore.jks
+coverage/
+
+# Secrets
+*.jks
+*.keystore
+keystore.properties
+key.properties
+
+# Logs
+build_log.txt
+release_build_log.txt
+
+# Gemini
+.geminiignore
+GEMINI.md
+
+# Qwen
+.qwenignore
+QWEN.md
+.qwen/
+
+# Claude
+.claude
+CLAUDE.md
+
+# Waydroid
+waydroid-*
+
+# Local Project Docs & Tools
+pdocs/
+
+# Android Secrets
+android/keystore.properties
+
+.aider*
+.antigravityignore
+.gemini/
+
+# FVM Version Cache
+.fvm/
+
+# Waydroid
+waydroid*
+
+# Fastlane
+android/fastlane/report.xml
+android/fastlane/google_play_api_key.json
+android/fastlane/README.md
+
+
+# Local release/signing material and device evidence
+*.p12
+*.apk
+*.aab
+*.zip
+signing.env
+private/
+backup/
+shots/
+work/
+release/
+*.pem
+*.key

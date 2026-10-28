@@ -1,0 +1,366 @@
+{
+    "aboutFlauncher": "About Arc Launcher",
+    "addCategory": "Add category",
+    "addSection": "Add section",
+    "alphabetical": "Alphabetical",
+    "appCardHighlightAnimation": "App card highlight animation",
+    "showFocusBorders": "Show focus borders",
+    "focusBorderThickness": "Focus border thickness",
+    "focusBorderThin": "Subtle (1.0 dp)",
+    "focusBorderDefault": "Default (1.5 dp)",
+    "focusBorderMedium": "Medium (2.0 dp)",
+    "focusBorderBold": "Bold (3.0 dp)",
+    "appInfo": "Application info",
+    "appKeyClick": "Click sound on key press",
+    "appearanceSettings": "Appearance",
+    "backgroundBlur": "Background blur",
+    "dockBlur": "Dock blur",
+    "dockDarkBackground": "Dark dock background",
+    "dockShadow": "Dock shadow",
+    "applications": "Applications",
+    "autoHideAppBar": "Automatically hide status bar",
+    "hideStatusBarInGrid": "Hide status bar in grid",
+    "backButtonAction": "Back button action",
+    "category": "Category",
+    "categories": "Categories",
+    "columnCount": "Column count",
+    "date": "Date",
+    "dateAndTimeFormat": "Date and time format",
+    "delete": "Delete",
+    "dialogOptionBackButtonActionDoNothing": "Do nothing",
+    "dialogOptionBackButtonActionShowScreensaver": "Show screensaver",
+    "dialogOptionBackButtonActionShowClock": "Show clock",
+    "dialogTextNoFileExplorer": "Please install a file explorer in order to pick a picture.",
+    "dialogTitleBackButtonAction": "Choose the back button action",
+    "disambiguateCategoryTitle": "{title} (Category)",
+    "@disambiguateCategoryTitle": {
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
+    "formattedDate": "Formatted date: {dateString}",
+    "@formattedDate": {
+        "placeholders": {
+            "dateString": {
+                "type": "String"
+            }
+        }
+    },
+    "formattedTime": "Formatted time: {timeString}",
+    "@formattedTime": {
+        "placeholders": {
+            "timeString": {
+                "type": "String"
+            }
+        }
+    },
+    "gradient": "Gradient",
+    "favoriteApps": "Favorite Apps",
+    "grid": "Grid",
+    "height": "Height",
+    "hide": "Hide",
+    "hiddenApplications": "Hidden Apps",
+    "launcherSections": "Sections",
+    "layout": "Layout",
+    "loading": "Loading",
+    "manual": "Manual",
+    "modifySection": "Modify section",
+    "mustNotBeEmpty": "Must not be empty",
+    "name": "Name",
+    "newSection": "New section",
+    "noDateFormatSpecified": "No date format specified",
+    "noTimeFormatSpecified": "No time format specified",
+    "allApplications": "All Apps",
+    "nonTvApplications": "Non-TV Apps",
+    "open": "Open",
+    "orSelectFormatSpecifiers": "Or select format specifiers",
+    "picture": "Picture",
+    "removeFrom": "Remove from {name}",
+    "@removeFrom": {
+        "placeholders": {
+            "name": { "type": "String" }
+        }
+    },
+    "renameCategory": "Rename category",
+    "reorder": "Reorder",
+    "row": "Row",
+    "rowHeight": "Row height",
+    "save": "Save",
+    "spacer": "Spacer",
+    "spacerMaxHeightRequirement": "Must be greater than 0 and less than or equal to 500",
+    "statusBar": "Status bar",
+    "settings": "Settings",
+    "show": "Show",
+    "showCategoryTitles": "Show category titles",
+    "sort": "Sort",
+    "systemSettings": "System settings",
+    "updateCheck": "Check for updates",
+    "updateNoUpdateTitle": "No updates available",
+    "updateNoUpdateBody": "You are already on the latest version ({currentVersion}).",
+    "@updateNoUpdateBody": {
+        "placeholders": {
+            "currentVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "updateAvailableTitle": "Update available",
+    "updateAvailableBody": "Version {latestVersion} is available (current: {currentVersion}).",
+    "@updateAvailableBody": {
+        "placeholders": {
+            "latestVersion": {
+                "type": "String"
+            },
+            "currentVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "updateChangelog": "What's new",
+    "updateDownloadButton": "Download",
+    "updateReadyToInstallTitle": "Ready to install",
+    "updateReadyToInstallBody": "The APK for version {latestVersion} is downloaded. Start installation now?",
+    "@updateReadyToInstallBody": {
+        "placeholders": {
+            "latestVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "updateInstallButton": "Install",
+    "updateInstallPermissionTitle": "Installer permission required",
+    "updateInstallPermissionBody": "Allow Arc Launcher to install unknown apps, then retry the update.",
+    "updateOpenPermissionSettingsButton": "Open permission settings",
+    "updateErrorGeneric": "Update check failed. Please try again.",
+    "textAboutDialog": "Arc Launcher is a customized open-source launcher for Android TV, based on FLauncher.\n\nDeveloped by Meddouri Badis.\nSource code available at {repoUrl}.",
+    "@textAboutDialog": {
+        "placeholders": {
+            "repoUrl": {
+                "type": "String"
+            }
+        }
+    },
+    "textEmptyCategory": "This category is empty.",
+    "time": "Time",
+    "titleStatusBarSettingsPage": "Choose what to display in the status bar",
+    "tvApplications": "TV Apps",
+    "type": "Type",
+    "typeInTheDateFormat": "Type in the date format",
+    "typeInTheHourFormat": "Type in the hour format",
+    "uninstall": "Uninstall",
+    "wallpaper": "Wallpaper",
+    "withEllipsisAddTo": "Add to...",
+    "timeBasedWallpaper": "Time based wallpaper",
+    "unsplashSlideshow": "Unsplash slideshow",
+    "unsplashEnable": "Show Unsplash photos",
+    "unsplashAccessKey": "Unsplash access key",
+    "unsplashAccessKeyHelp": "Create a free app at unsplash.com/developers and paste its Access Key.",
+    "unsplashNotSet": "Not set",
+    "unsplashInterval": "Change every",
+    "unsplashIntervalMinutes": "{minutes} min",
+    "@unsplashIntervalMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "slideshowCategories": "Categories",
+    "slideshowDay": "Day (6:00 - 18:00)",
+    "slideshowNight": "Night (18:00 - 6:00)",
+    "unsplashPhotoCredit": "Photo: {author} / Unsplash",
+    "@unsplashPhotoCredit": {
+        "placeholders": {
+            "author": {
+                "type": "String"
+            }
+        }
+    },
+    "pickDayWallpaper": "Pick day wallpaper",
+    "pickNightWallpaper": "Pick night wallpaper",
+    "video": "Video",
+    "pickDayVideoWallpaper": "Pick day video",
+    "pickNightVideoWallpaper": "Pick night video",
+    "watchNextSectionTitle": "Watch Next",
+    "showWatchNextSection": "Show Watch Next Section",
+    "watchNextPermissionTitle": "Watch Next permission required",
+    "watchNextPermissionBody": "Allow access to TV listings to show your continue watching items.",
+    "watchNextGrantPermission": "Grant permission",
+    "watchNextCheckPermission": "Check again",
+    "interface": "Interface",
+    "system": "System",
+    "accentColor": "Accent Color",
+    "miscellaneous": "Miscellaneous",
+    "brightnessScheduler": "Brightness Scheduler",
+    "screensaverSettings": "Screensaver Settings",
+    "screensaverClockStyle": "Screensaver Clock Style",
+    "wifiUsagePeriod": "WiFi Usage Period",
+    "showAppNamesBelowIcons": "Show App Names Below Icons",
+    "wifiUsage": "WiFi Usage",
+    "networkIndicator": "Network Indicator",
+    "customName": "Custom Name",
+    "lastUsed": "Last Used",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "grantPermission": "Grant Permission",
+    "checkStatus": "Check Status",
+    "watchNextBigPictureMode": "Immersive mode",
+    "watchNextBigPictureModeDescription": "Show full-width hero backdrop with an action watch button",
+    "watchNextWatch": "Watch",
+    "watchNextResume": "Resume",
+    "watchNextRefresh": "Refresh content",
+    "watchNextRefreshDescription": "Reload recommendations from media providers",
+    "watchNextRefreshed": "Watch Next content refreshed",
+    "watchNextFilterApps": "Filter apps",
+    "watchNextFilterAppsDescription": "Select which apps can display content in Watch Next",
+    "watchNextNoApps": "No media apps currently providing Watch Next content",
+    "watchNextShowAllApps": "Show all installed apps",
+    "watchNextHideWithoutImages": "Hide programs without image",
+    "watchNextHideWithoutImagesDescription": "Only show programs that provide poster or backdrop artwork",
+    "watchNextMaxItems": "Maximum programs",
+    "watchNextMaxItemsDescription": "Limit the number of programs displayed in Watch Next",
+    "watchNextMaxItemsUnlimited": "Unlimited",
+    "redditWallpaper": "Reddit wallpaper",
+    "redditWallpaperEnable": "Show Reddit wallpapers",
+    "redditSubreddits": "Subreddits",
+    "redditSort": "Sort by",
+    "redditSortHot": "Hot",
+    "redditSortTopDay": "Top (Today)",
+    "redditSortTopWeek": "Top (This week)",
+    "redditSortTopMonth": "Top (This month)",
+    "redditSortTopAll": "Top (All time)",
+    "redditSortNew": "New",
+    "redditInterval": "Change every",
+    "redditIntervalMinutes": "{minutes} min",
+    "@redditIntervalMinutes": {
+        "placeholders": {
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "redditInterval1Hour": "1 hour",
+    "redditIntervalHours": "{hours} hours",
+    "@redditIntervalHours": {
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            }
+        }
+    },
+    "redditInterval1Day": "1 day",
+    "redditIntervalDays": "{days} days",
+    "@redditIntervalDays": {
+        "placeholders": {
+            "days": {
+                "type": "int"
+            }
+        }
+    },
+    "redditClientId": "Reddit Client ID (Optional)",
+    "redditClientIdHelp": "Optional. Create an installed app at reddit.com/prefs/apps and paste its ID if your network requires it.",
+    "redditChangeNow": "Change wallpaper now",
+    "redditAddSubreddit": "Add custom subreddit",
+    "redditSubredditName": "Subreddit name (without r/)",
+    "redditSubredditAdded": "Subreddit added",
+    "redditSubredditInvalid": "Please enter a valid subreddit name",
+    "redditWallpaperUpdated": "Wallpaper updated successfully",
+    "redditWallpaperFailed": "Failed to fetch wallpaper. If this persists, configure a Reddit Client ID in settings.",
+    "addToFavorites": "Add to Fav",
+    "removeFromFavorites": "Remove from Fav",
+    "addToCategory": "Add to Category",
+    "setCustomBanner": "Set Custom Banner",
+    "clearCustomBanner": "Clear Custom Banner",
+    "customBannerSetFailed": "Failed to set banner: {error}",
+    "customBannerClearFailed": "Failed to clear banner: {error}",
+    "selectImage": "Select Image",
+    "selectVideo": "Select Video",
+    "mediaItemCount": "{count} items",
+    "noImagesFound": "No images found on device",
+    "noVideosFound": "No videos found on device",
+    "mediaNavigationHint": "D-pad: navigate  •  Back: cancel",
+    "mediaSelectionHint": "D-pad: navigate  •  Select: set wallpaper  •  Back: cancel",
+    "mediaPermissionRequired": "Media access permission is required",
+    "mediaPermissionHelp": "Grant permission to browse photos and videos",
+    "preview": "Preview",
+    "colorPurple": "Purple",
+    "colorTeal": "Teal",
+    "colorBlue": "Blue",
+    "colorOrange": "Orange",
+    "colorPink": "Pink",
+    "colorGreen": "Green",
+    "colorWhite": "White",
+    "colorYellow": "Yellow",
+    "colorRed": "Red",
+    "colorCyan": "Cyan",
+    "colorIndigo": "Indigo",
+    "colorLime": "Lime",
+    "colorAmber": "Amber",
+    "colorRose": "Rose",
+    "colorIceBlue": "Ice Blue",
+    "clockStyleMinimal": "Minimal",
+    "clockStyleMinimalDescription": "Thin, elegant font (Default)",
+    "clockStyleBold": "Bold",
+    "clockStyleBoldDescription": "Thick, highly visible font",
+    "clockStyleRetro": "Retro",
+    "clockStyleRetroDescription": "Monospaced, retro terminal style",
+    "clockStyleElegant": "Elegant",
+    "clockStyleElegantDescription": "Classic serif typeface",
+    "clockStyleNeon": "Neon",
+    "clockStyleNeonDescription": "Ultra-thin, glowing style",
+    "clockStylePixel": "Pixel",
+    "clockStylePixelDescription": "Bold monospaced, arcade feel",
+    "clockStyleDigital": "Digital",
+    "clockStyleDigitalDescription": "Clean monospaced display",
+    "brightnessPermissionRequired": "Permission Required",
+    "brightnessPermissionHelp": "To control brightness on this device, you must grant permission via ADB:",
+    "brightnessExperimentalNotice": "EXPERIMENTAL: This feature is untested and may be removed in future versions based on user feedback.",
+    "brightnessDeviceSupportNote": "Note: Some Android TV devices may not support app-level brightness control.",
+    "enableBrightnessScheduler": "Enable Scheduler",
+    "currentBrightnessSlot": "Current: {slot}",
+    "brightnessSlotMorning": "6 AM - 9 AM",
+    "brightnessSlotDay": "9 AM - 3 PM",
+    "brightnessSlotAfternoon": "3 PM - 6 PM",
+    "brightnessSlotEvening": "6 PM - 10 PM",
+    "brightnessSlotNight": "10 PM - 6 AM",
+    "@customBannerSetFailed": {
+      "placeholders": {
+        "error": {
+          "type": "String"
+        }
+      }
+    },
+    "@customBannerClearFailed": {
+      "placeholders": {
+        "error": {
+          "type": "String"
+        }
+      }
+    },
+    "@mediaItemCount": {
+      "placeholders": {
+        "count": {
+          "type": "int"
+        }
+      }
+    },
+    "favoriteIconSize": "Favourites icon size",
+    "favoriteIconSizeHelp": "Fill each row before starting the next. Up to three rows stay visible; additional favourites remain accessible by scrolling.",
+    "favoriteIconSizeValue": "{percent}% ({columns} per row)",
+    "@favoriteIconSizeValue": {
+      "placeholders": {
+        "percent": { "type": "int" },
+        "columns": { "type": "int" }
+      }
+    },
+    "@currentBrightnessSlot": {
+      "placeholders": {
+        "slot": {
+          "type": "String"
+        }
+      }
+    }
+}

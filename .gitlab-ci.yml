@@ -1,0 +1,237 @@
+variables:
+  FLUTTER_DOCKER_IMAGE: ghcr.io/cirruslabs/flutter:3.41.9
+  GITLAB_GENERIC_PACKAGE_NAME: arclauncher
+  RELEASE_APK_FILENAME_PREFIX: arclauncher
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: always
+    - if: $CI_PIPELINE_SOURCE == "api"
+      when: always
+    - if: $CI_PIPELINE_SOURCE == "trigger"
+      when: always
+    - when: never
+
+stages:
+  - precheck
+  - analyze
+  - test
+  - build
+  - transform
+  - upload
+  - deploy
+  - promote
+
+commitlint:
+  image:
+    name: gtramontina/commitlint:8.3.5
+    entrypoint: [ "" ]
+  stage: precheck
+  needs: [ ]
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "main"
+      when: never
+    - when: on_success
+  script:
+    - commitlint --from origin/main --verbose
+
+stylelint:
+  image: $FLUTTER_DOCKER_IMAGE
+  stage: precheck
+  needs: [ ]
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: on_success
+  script:
+    - flutter format --line-length 120 --dry-run --set-exit-if-changed .
+
+analyze:
+  image: $FLUTTER_DOCKER_IMAGE
+  stage: analyze
+  needs: [ ]
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: on_success
+  script:
+    - flutter analyze
+
+test:
+  image: $FLUTTER_DOCKER_IMAGE
+  stage: test
+  needs: [ ]
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: on_success
+  before_script:
+    - apt-get update
+    - apt-get install -y libsqlite3-dev
+  script:
+    - flutter test --coverage
+  after_script:
+    - lcov --remove coverage/lcov.info lib/database.drift.dart --output-file coverage/lcov.info
+    - genhtml --output ./coverage coverage/lcov.info
+  coverage: '/^\s+lines\.+:\s+([\d.]+\%)\s+/'
+
+build:appbundle:debug:
+  image: $FLUTTER_DOCKER_IMAGE
+  stage: build
+  needs: [ ]
+  except:
+    - master
+    - main
+    - tags
+  script:
+    - flutter build appbundle --debug --flavor github
+
+build:appbundle:release:github:
+  image: $FLUTTER_DOCKER_IMAGE
+  stage: build
+  needs: [ ]
+  only:
+    - master
+    - main
+    - tags
+  before_script:
+    - echo "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
+    - |
+      test -n "${SIGNING_JKS_FILE_BASE64:-}" || { echo "SIGNING_JKS_FILE_BASE64 is empty or unset"; exit 1; }
+      test -n "${SIGNING_KEYSTORE_PASSWORD:-}" || { echo "SIGNING_KEYSTORE_PASSWORD is empty or unset (check GitLab variable + Protected / branch)"; exit 1; }
+      test -n "${SIGNING_KEY_ALIAS:-}" || { echo "SIGNING_KEY_ALIAS is empty or unset"; exit 1; }
+      test -n "${SIGNING_KEY_PASSWORD:-}" || { echo "SIGNING_KEY_PASSWORD is empty or unset"; exit 1; }
+      echo -n "$SIGNING_JKS_FILE_BASE64" | base64 -d > android/app/upload-keystore.jks
+    - if [ -n "$CI_COMMIT_TAG" ]; then BUILD_NAME=$CI_COMMIT_TAG; else BUILD_NAME=$CI_COMMIT_SHORT_SHA; fi
+  script:
+    - flutter build appbundle --release --flavor github --dart-define=ENABLE_SELF_UPDATER=true --build-number=$CI_PIPELINE_IID --build-name=$BUILD_NAME
+  artifacts:
+    paths:
+      - build/app/outputs/bundle/githubRelease/app-github-release.aab
+
+build:appbundle:release:play:
+  image: $FLUTTER_DOCKER_IMAGE
+  stage: build
+  needs: [ ]
+  only:
+    - master
+    - main
+    - tags
+  before_script:
+    - echo "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
+    - |
+      test -n "${SIGNING_JKS_FILE_BASE64:-}" || { echo "SIGNING_JKS_FILE_BASE64 is empty or unset"; exit 1; }
+      test -n "${SIGNING_KEYSTORE_PASSWORD:-}" || { echo "SIGNING_KEYSTORE_PASSWORD is empty or unset (check GitLab variable + Protected / branch)"; exit 1; }
+      test -n "${SIGNING_KEY_ALIAS:-}" || { echo "SIGNING_KEY_ALIAS is empty or unset"; exit 1; }
+      test -n "${SIGNING_KEY_PASSWORD:-}" || { echo "SIGNING_KEY_PASSWORD is empty or unset"; exit 1; }
+      echo -n "$SIGNING_JKS_FILE_BASE64" | base64 -d > android/app/upload-keystore.jks
+    - if [ -n "$CI_COMMIT_TAG" ]; then BUILD_NAME=$CI_COMMIT_TAG; else BUILD_NAME=$CI_COMMIT_SHORT_SHA; fi
+  script:
+    - flutter build appbundle --release --flavor play --build-number=$CI_PIPELINE_IID --build-name=$BUILD_NAME
+  artifacts:
+    paths:
+      - build/app/outputs/bundle/playRelease/app-play-release.aab
+
+build:apk:
+  image: eclipse-temurin:17-jdk-jammy
+  stage: transform
+  needs: [ "build:appbundle:release:github" ]
+  only:
+    - tags
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends wget unzip && rm -rf /var/lib/apt/lists/*
+    - |
+      test -n "${SIGNING_JKS_FILE_BASE64:-}" || { echo "SIGNING_JKS_FILE_BASE64 is empty or unset"; exit 1; }
+      test -n "${SIGNING_KEYSTORE_PASSWORD:-}" || { echo "SIGNING_KEYSTORE_PASSWORD is empty or unset"; exit 1; }
+      test -n "${SIGNING_KEY_ALIAS:-}" || { echo "SIGNING_KEY_ALIAS is empty or unset"; exit 1; }
+      test -n "${SIGNING_KEY_PASSWORD:-}" || { echo "SIGNING_KEY_PASSWORD is empty or unset"; exit 1; }
+      echo -n "$SIGNING_JKS_FILE_BASE64" | base64 -d > android/app/upload-keystore.jks
+    - wget https://github.com/google/bundletool/releases/download/1.6.1/bundletool-all-1.6.1.jar -O bundletool.jar
+  script:
+    - java -jar bundletool.jar build-apks --mode=universal --bundle=build/app/outputs/bundle/githubRelease/app-github-release.aab --output=app-release.apks --ks=android/app/upload-keystore.jks --ks-pass=pass:$SIGNING_KEYSTORE_PASSWORD --ks-key-alias=$SIGNING_KEY_ALIAS --key-pass=pass:$SIGNING_KEY_PASSWORD
+    - unzip app-release.apks
+    - mv universal.apk app-release.apk
+  artifacts:
+    paths:
+      - app-release.apk
+
+deploy:gitlab-release:
+  image: curlimages/curl:latest
+  stage: deploy
+  needs:
+    - job: commitlint
+      optional: true
+    - job: stylelint
+      optional: true
+    - job: analyze
+      optional: true
+    - job: test
+      optional: true
+    - build:apk
+  only:
+    - tags
+  script:
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file app-release.apk "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${GITLAB_GENERIC_PACKAGE_NAME}/$CI_COMMIT_TAG/${RELEASE_APK_FILENAME_PREFIX}-$CI_COMMIT_TAG.apk"'
+
+deploy:play-store:
+  stage: deploy
+  when: manual
+  needs:
+    - job: commitlint
+      optional: true
+    - job: stylelint
+      optional: true
+    - job: analyze
+      optional: true
+    - job: test
+      optional: true
+    - build:appbundle:release:play
+  image: ruby:2.6.3
+  only:
+    - tags
+  before_script:
+    - echo "$GOOGLE_PLAY_API_KEY" > android/fastlane/google_play_api_key.json
+    - export LC_ALL=en_US.UTF-8
+    - export LANG=en_US.UTF-8
+    - gem install fastlane -NV
+    - cd android
+  script:
+    - fastlane deploy
+
+promote:play-store:
+  stage: promote
+  needs: [ "deploy:play-store" ]
+  image: ruby:2.6.3
+  when: manual
+  only:
+    - tags
+  before_script:
+    - echo "$GOOGLE_PLAY_API_KEY" > android/fastlane/google_play_api_key.json
+    - export LC_ALL=en_US.UTF-8
+    - export LANG=en_US.UTF-8
+    - gem install fastlane -NV
+    - cd android
+  script:
+    - fastlane promote
+
+promote:gitlab-release:
+  stage: promote
+  needs: [ "deploy:gitlab-release" ]
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  when: manual
+  only:
+    - tags
+  script:
+    - echo 'running promote:gitlab-release'
+  release:
+    name: $CI_COMMIT_TAG
+    description: Arc Launcher v$CI_COMMIT_TAG
+    tag_name: $CI_COMMIT_TAG
+    assets:
+      links:
+        - name: ${RELEASE_APK_FILENAME_PREFIX}-$CI_COMMIT_TAG.apk
+          url: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${GITLAB_GENERIC_PACKAGE_NAME}/$CI_COMMIT_TAG/${RELEASE_APK_FILENAME_PREFIX}-$CI_COMMIT_TAG.apk
+          filepath: /${RELEASE_APK_FILENAME_PREFIX}-$CI_COMMIT_TAG.apk

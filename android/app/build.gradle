@@ -1,0 +1,152 @@
+/*
+ * FLauncher
+ * Copyright (C) 2021  Étienne Fesser
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+plugins {
+    id "com.android.application"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+def secretProperties = new Properties()
+secretProperties.setProperty("signing_keystore_password", "${System.getenv('FLAUNCHER_KEYSTORE_PASSWORD')}")
+secretProperties.setProperty("signing_key_password", "${System.getenv('FLAUNCHER_SIGNING_KEY_PASSWORD')}")
+secretProperties.setProperty("signing_key_alias", "${System.getenv('FLAUNCHER_SIGNING_KEY_ALIAS')}")
+
+android {
+    flavorDimensions += "store"
+
+    productFlavors {
+        play {
+            dimension "store"
+        }
+        github {
+            dimension "store"
+        }
+    }
+
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs (for IzzyOnDroid/F-Droid)
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles (for Google Play)
+        includeInBundle = false
+    }
+
+    defaultConfig {
+        applicationId "com.omeda.arc.clean"
+        compileSdk 36
+        minSdkVersion flutter.minSdkVersion
+        targetSdk 35
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+    }
+
+    signingConfigs {
+        debug {}
+        release {
+            if (System.getenv('ARC_CLEAN_KEYSTORE') != null) {
+                storeFile file(System.getenv('ARC_CLEAN_KEYSTORE'))
+                storePassword System.getenv('SIGNING_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('SIGNING_KEY_ALIAS')
+                keyPassword System.getenv('SIGNING_KEY_PASSWORD')
+            } else if (localProperties['storeFile'] != null) {
+                storeFile file(localProperties['storeFile'])
+                storePassword localProperties['storePassword']
+                keyAlias localProperties['keyAlias']
+                keyPassword localProperties['keyPassword']
+            } else if (file('upload-keystore.jks').exists()) {
+                def storePass = System.getenv('SIGNING_KEYSTORE_PASSWORD')
+                def alias = System.getenv('SIGNING_KEY_ALIAS')
+                def keyPass = System.getenv('SIGNING_KEY_PASSWORD')
+                if (storePass == null || alias == null || keyPass == null) {
+                    throw new Exception(
+                            'upload-keystore.jks is present but SIGNING_KEYSTORE_PASSWORD, SIGNING_KEY_ALIAS, and SIGNING_KEY_PASSWORD must be set')
+                }
+                storeFile file('upload-keystore.jks')
+                storePassword storePass
+                keyAlias alias
+                keyPassword keyPass
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    splits {
+        abi {
+            // https://stackoverflow.com/a/39950584/21037183
+            enable gradle.startParameter.taskNames.any {
+                it.startsWith("assemble") && it.endsWith("Release")
+            }
+            reset()
+            // CI publishes arm-only APKs; local release builds keep x86 for emulators.
+            def releaseAbis = ["armeabi-v7a"]
+            include(*releaseAbis)
+            universalApk true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    namespace 'com.omeda.arc'
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def abi = output.getFilter(com.android.build.OutputFile.ABI)
+            if (abi != null) {
+                outputFileName = "arc-launcher-${abi}-${variant.buildType.name}.apk"
+            } else {
+                outputFileName = "arc-launcher-universal-${variant.buildType.name}.apk"
+            }
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
