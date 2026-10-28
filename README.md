@@ -2,6 +2,16 @@
 
 A personal customization of [Arc Launcher](https://github.com/meddouribadis/arclauncher), based on upstream commit `58fca01519b5884ad6aa3c550019d6eb60818be4` (1.2.0).
 
+## Acknowledgements
+
+[Arc Launcher — original repository](https://github.com/meddouribadis/arclauncher)
+
+Thank you to **meddouribadis** for creating and sharing Arc Launcher, the open-source foundation of this customized launcher.
+
+[CleanYourTV — original repository](https://github.com/Gathin23/cleanyourtv)
+
+Thank you to **Gathin23** for creating and sharing CleanYourTV, which helped guide this Android TV cleanup and launcher setup.
+
 ## Changes
 
 - Adjustable favourite card size: 50%, 67%, 75%, or 100%; default 67% of the original width and height.
