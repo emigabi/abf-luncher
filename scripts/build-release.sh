@@ -18,4 +18,4 @@ flutter analyze --no-pub --no-fatal-infos --no-fatal-warnings \
   test/widgets/favorite_dock_test.dart test/providers/settings_service_test.dart
 flutter test --no-pub test/widgets/favorite_dock_test.dart test/providers/settings_service_test.dart
 flutter build apk --no-pub --release --flavor github --split-per-abi --target-platform android-arm,android-arm64 \
-  --dart-define=ENABLE_SELF_UPDATER=false --build-name=1.2.0-abf1 --build-number=4130
+  --dart-define=ENABLE_SELF_UPDATER=false --build-name=1.2.0-abf2 --build-number=4131

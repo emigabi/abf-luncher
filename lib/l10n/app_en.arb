@@ -1,5 +1,5 @@
 {
-    "aboutFlauncher": "About ABF Luncher",
+    "aboutFlauncher": "About ABF Launcher",
     "addCategory": "Add category",
     "addSection": "Add section",
     "alphabetical": "Alphabetical",
@@ -131,10 +131,10 @@
     },
     "updateInstallButton": "Install",
     "updateInstallPermissionTitle": "Installer permission required",
-    "updateInstallPermissionBody": "Allow ABF Luncher to install unknown apps, then retry the update.",
+    "updateInstallPermissionBody": "Allow ABF Launcher to install unknown apps, then retry the update.",
     "updateOpenPermissionSettingsButton": "Open permission settings",
     "updateErrorGeneric": "Update check failed. Please try again.",
-    "textAboutDialog": "ABF Luncher is a customized open-source launcher for Android TV, based on Arc Launcher, LTvLauncher and FLauncher.\n\nSource code available at {repoUrl}.",
+    "textAboutDialog": "ABF Launcher is a customized open-source launcher for Android TV, based on Arc Launcher, LTvLauncher and FLauncher.\n\nSource code available at {repoUrl}.",
     "@textAboutDialog": {
         "placeholders": {
             "repoUrl": {

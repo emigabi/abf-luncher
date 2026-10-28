@@ -105,7 +105,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutFlauncher.
   ///
   /// In en, this message translates to:
-  /// **'About ABF Luncher'**
+  /// **'About ABF Launcher'**
   String get aboutFlauncher;
 
   /// No description provided for @addCategory.
@@ -597,7 +597,7 @@ abstract class AppLocalizations {
   /// No description provided for @updateInstallPermissionBody.
   ///
   /// In en, this message translates to:
-  /// **'Allow ABF Luncher to install unknown apps, then retry the update.'**
+  /// **'Allow ABF Launcher to install unknown apps, then retry the update.'**
   String get updateInstallPermissionBody;
 
   /// No description provided for @updateOpenPermissionSettingsButton.
@@ -615,7 +615,7 @@ abstract class AppLocalizations {
   /// No description provided for @textAboutDialog.
   ///
   /// In en, this message translates to:
-  /// **'ABF Luncher is a customized open-source launcher for Android TV, based on Arc Launcher, LTvLauncher and FLauncher.\n\nSource code available at {repoUrl}.'**
+  /// **'ABF Launcher is a customized open-source launcher for Android TV, based on Arc Launcher, LTvLauncher and FLauncher.\n\nSource code available at {repoUrl}.'**
   String textAboutDialog(String repoUrl);
 
   /// No description provided for @textEmptyCategory.

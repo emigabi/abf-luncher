@@ -128,9 +128,9 @@ android {
         variant.outputs.all { output ->
             def abi = output.getFilter(com.android.build.OutputFile.ABI)
             if (abi != null) {
-                outputFileName = "abf-luncher-${abi}-${variant.buildType.name}.apk"
+                outputFileName = "abf-launcher-${abi}-${variant.buildType.name}.apk"
             } else {
-                outputFileName = "abf-luncher-universal-${variant.buildType.name}.apk"
+                outputFileName = "abf-launcher-universal-${variant.buildType.name}.apk"
             }
         }
     }

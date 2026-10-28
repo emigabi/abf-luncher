@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get aboutFlauncher => 'About ABF Luncher';
+  String get aboutFlauncher => 'About ABF Launcher';
 
   @override
   String get addCategory => 'Add category';
@@ -272,7 +272,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateInstallPermissionBody =>
-      'Allow ABF Luncher to install unknown apps, then retry the update.';
+      'Allow ABF Launcher to install unknown apps, then retry the update.';
 
   @override
   String get updateOpenPermissionSettingsButton => 'Open permission settings';
@@ -282,7 +282,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String textAboutDialog(String repoUrl) {
-    return 'ABF Luncher is a customized open-source launcher for Android TV, based on Arc Launcher, LTvLauncher and FLauncher.\n\nSource code available at $repoUrl.';
+    return 'ABF Launcher is a customized open-source launcher for Android TV, based on Arc Launcher, LTvLauncher and FLauncher.\n\nSource code available at $repoUrl.';
   }
 
   @override

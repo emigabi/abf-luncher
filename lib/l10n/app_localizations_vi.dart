@@ -9,7 +9,7 @@ class AppLocalizationsVi extends AppLocalizations {
   AppLocalizationsVi([String locale = 'vi']) : super(locale);
 
   @override
-  String get aboutFlauncher => 'Giới thiệu ABF Luncher';
+  String get aboutFlauncher => 'Giới thiệu ABF Launcher';
 
   @override
   String get addCategory => 'Thêm danh mục';
@@ -273,7 +273,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get updateInstallPermissionBody =>
-      'Cho phép ABF Luncher cài ứng dụng không rõ nguồn gốc, rồi thử cập nhật lại.';
+      'Cho phép ABF Launcher cài ứng dụng không rõ nguồn gốc, rồi thử cập nhật lại.';
 
   @override
   String get updateOpenPermissionSettingsButton => 'Mở cài đặt quyền';
@@ -284,7 +284,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String textAboutDialog(String repoUrl) {
-    return 'ABF Luncher là ứng dụng màn hình chính mã nguồn mở dành cho Android TV, được tùy chỉnh từ Arc Launcher, LTvLauncher và FLauncher.\n\nMã nguồn tại $repoUrl.';
+    return 'ABF Launcher là ứng dụng màn hình chính mã nguồn mở dành cho Android TV, được tùy chỉnh từ Arc Launcher, LTvLauncher và FLauncher.\n\nMã nguồn tại $repoUrl.';
   }
 
   @override
