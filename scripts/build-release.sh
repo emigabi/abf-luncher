@@ -12,9 +12,10 @@ flutter gen-l10n
 dart run build_runner build --delete-conflicting-outputs --build-filter=test/mocks.mocks.dart
 flutter analyze --no-pub --no-fatal-infos --no-fatal-warnings \
   lib/flauncher.dart lib/providers/settings_service.dart lib/widgets/category_clean_row.dart \
+  lib/widgets/settings/flauncher_about_dialog.dart \
   lib/widgets/settings/appearance_panel_page.dart lib/widgets/settings/settings_panel.dart \
   lib/widgets/settings/favorite_icon_size_page.dart \
   test/widgets/favorite_dock_test.dart test/providers/settings_service_test.dart
 flutter test --no-pub test/widgets/favorite_dock_test.dart test/providers/settings_service_test.dart
-flutter build apk --no-pub --release --flavor github --target-platform android-arm \
-  --dart-define=ENABLE_SELF_UPDATER=false --build-name=1.2.0-clean3 --build-number=4129
+flutter build apk --no-pub --release --flavor github --split-per-abi --target-platform android-arm,android-arm64 \
+  --dart-define=ENABLE_SELF_UPDATER=false --build-name=1.2.0-abf1 --build-number=4130

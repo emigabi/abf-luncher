@@ -114,19 +114,8 @@ android {
         }
     }
 
-    splits {
-        abi {
-            // https://stackoverflow.com/a/39950584/21037183
-            enable gradle.startParameter.taskNames.any {
-                it.startsWith("assemble") && it.endsWith("Release")
-            }
-            reset()
-            // CI publishes arm-only APKs; local release builds keep x86 for emulators.
-            def releaseAbis = ["armeabi-v7a"]
-            include(*releaseAbis)
-            universalApk true
-        }
-    }
+    // Flutter configures ABI splits from --split-per-abi and --target-platform.
+    // Manually enabling splits conflicts with Flutter's default NDK ABI filters.
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -139,9 +128,9 @@ android {
         variant.outputs.all { output ->
             def abi = output.getFilter(com.android.build.OutputFile.ABI)
             if (abi != null) {
-                outputFileName = "arc-launcher-${abi}-${variant.buildType.name}.apk"
+                outputFileName = "abf-luncher-${abi}-${variant.buildType.name}.apk"
             } else {
-                outputFileName = "arc-launcher-universal-${variant.buildType.name}.apk"
+                outputFileName = "abf-luncher-universal-${variant.buildType.name}.apk"
             }
         }
     }
