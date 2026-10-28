@@ -18,6 +18,7 @@
 
 import 'package:flauncher/models/watch_next_item.dart';
 import 'package:flauncher/actions.dart';
+import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/widgets/app_card.dart';
@@ -25,7 +26,7 @@ import 'package:flauncher/widgets/app_card_contour_painter.dart';
 import 'package:flauncher/widgets/watch_next_hero.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/semantics.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
@@ -233,6 +234,7 @@ class _WatchNextCleanRow extends StatefulWidget {
 
 class _WatchNextCleanRowState extends State<_WatchNextCleanRow> {
   final ScrollController _scrollController = ScrollController();
+  final GlobalKey _rowKey = GlobalKey();
   final List<FocusNode> _focusNodes = [];
   double? _lastScrollTarget;
 
@@ -288,7 +290,30 @@ class _WatchNextCleanRowState extends State<_WatchNextCleanRow> {
     if (focused) {
       widget.onItemFocused?.call();
       _scrollToIndex(index);
+      _ensureRowVisible();
     }
+  }
+
+  void _ensureRowVisible() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final rowContext = _rowKey.currentContext;
+      final row = rowContext?.findRenderObject();
+      if (rowContext == null || row is! RenderBox) return;
+      final viewport = RenderAbstractViewport.of(row);
+      if (viewport is! RenderBox) return;
+      final viewportBox = viewport as RenderBox;
+      final top = row.localToGlobal(Offset.zero, ancestor: viewportBox).dy;
+      if (top >= 0 && top + row.size.height <= viewportBox.size.height) return;
+      // Reveal the row in the outer vertical viewport without interrupting
+      // the independent horizontal carousel animation.
+      Scrollable.ensureVisible(
+        rowContext,
+        alignment: top < 0 ? 0 : 1,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+      );
+    });
   }
 
   void _scrollToIndex(int index) {
@@ -324,6 +349,7 @@ class _WatchNextCleanRowState extends State<_WatchNextCleanRow> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
+      key: _rowKey,
       height: _kWatchNextItemHeight + 24 + _kWatchNextRowVerticalSlack,
       child: ListView.builder(
         controller: _scrollController,
@@ -451,6 +477,9 @@ class _WatchNextCardState extends State<_WatchNextCard> {
     final (bool showFocusBorders, double borderThickness) = context.select<SettingsService, (bool, double)>(
       (s) => (s.showFocusBorders, s.focusBorderThickness),
     );
+    final sourceName = context.select<AppsService, String?>(
+      (service) => service.getApplication(widget.item.packageName)?.name.trim(),
+    );
 
 
     return Padding(
@@ -495,6 +524,34 @@ class _WatchNextCardState extends State<_WatchNextCard> {
                       fit: StackFit.expand,
                       children: [
                         _buildPoster(posterData, posterLoadFailed),
+                        if (sourceName != null && sourceName.isNotEmpty)
+                          Positioned(
+                            top: 8,
+                            left: 8,
+                            right: 8,
+                            child: IgnorePointer(
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.72),
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Text(
+                                    sourceName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         Positioned(
                           left: 0,
                           right: 0,

@@ -30,10 +30,21 @@ class LauncherState extends ChangeNotifier
   bool _isDefaultLauncher;
   bool _launcherVisible;
   bool _appGridFocused;
+  bool _allAppsExpanded = false;
 
   bool get isDefaultLauncher => _isDefaultLauncher;
   bool get launcherVisible => _launcherVisible;
   bool get appGridFocused => _appGridFocused;
+  bool get allAppsExpanded => _allAppsExpanded;
+
+  void toggleAllApps() => setAllAppsExpanded(!_allAppsExpanded);
+
+  void setAllAppsExpanded(bool value) {
+    if (_allAppsExpanded == value) return;
+    _allAppsExpanded = value;
+    _appGridFocused = false;
+    notifyListeners();
+  }
 
   LauncherState() : _isDefaultLauncher = false, _launcherVisible = true, _appGridFocused = false;
 
@@ -56,6 +67,10 @@ class LauncherState extends ChangeNotifier
   }
 
   void handleBackNavigation(BuildContext context) {
+    if (_allAppsExpanded) {
+      setAllAppsExpanded(false);
+      return;
+    }
     AppsService appsService = context.read<AppsService>();
     LauncherState launcherState = context.read<LauncherState>();
     SettingsService settingsService = context.read<SettingsService>();

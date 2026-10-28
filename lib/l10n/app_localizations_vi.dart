@@ -783,4 +783,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String favoriteIconSizeValue(int percent, int columns) {
     return '$percent% ($columns per row)';
   }
+
+  @override
+  String get allApps => 'Tất cả ứng dụng';
+
+  @override
+  String get showAllApps => 'Hiện các ứng dụng khác';
+
+  @override
+  String get hideAllApps => 'Ẩn các ứng dụng khác';
+
+  @override
+  String get noOtherApps => 'Không có ứng dụng khác để hiển thị';
 }

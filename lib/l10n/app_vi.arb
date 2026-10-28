@@ -234,5 +234,9 @@
   "brightnessSlotDay": "9:00–15:00",
   "brightnessSlotAfternoon": "15:00–18:00",
   "brightnessSlotEvening": "18:00–22:00",
-  "brightnessSlotNight": "22:00–6:00"
+  "brightnessSlotNight": "22:00–6:00",
+  "allApps": "Tất cả ứng dụng",
+  "showAllApps": "Hiện các ứng dụng khác",
+  "hideAllApps": "Ẩn các ứng dụng khác",
+  "noOtherApps": "Không có ứng dụng khác để hiển thị"
 }

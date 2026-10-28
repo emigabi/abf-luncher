@@ -1529,6 +1529,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{percent}% ({columns} per row)'**
   String favoriteIconSizeValue(int percent, int columns);
+
+  /// No description provided for @allApps.
+  ///
+  /// In en, this message translates to:
+  /// **'All apps'**
+  String get allApps;
+
+  /// No description provided for @showAllApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Show other apps'**
+  String get showAllApps;
+
+  /// No description provided for @hideAllApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide other apps'**
+  String get hideAllApps;
+
+  /// No description provided for @noOtherApps.
+  ///
+  /// In en, this message translates to:
+  /// **'No other apps to show'**
+  String get noOtherApps;
 }
 
 class _AppLocalizationsDelegate

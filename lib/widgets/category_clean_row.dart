@@ -50,6 +50,7 @@ class CategoryCleanRow extends StatelessWidget {
   final bool isFirstSection;
   final double scrollAlignment;
   final VoidCallback? onAppFocused;
+  final int rowsPerPage;
 
   CategoryCleanRow({
     Key? key,
@@ -58,6 +59,7 @@ class CategoryCleanRow extends StatelessWidget {
     this.isFirstSection = false,
     this.scrollAlignment = 0.5,
     this.onAppFocused,
+    this.rowsPerPage = kFavoriteDockRowsPerPage,
   }) : super(key: key);
 
   @override
@@ -85,9 +87,10 @@ class CategoryCleanRow extends StatelessWidget {
           final slotWidth =
               constraints.maxWidth / kFavoriteDockColumns * iconScale;
           final rowCount = (applications.length + columns - 1) ~/ columns;
+          final pageRows = rowsPerPage.clamp(1, kFavoriteDockRowsPerPage).toInt();
           final pageCount =
-              (rowCount + kFavoriteDockRowsPerPage - 1) ~/
-              kFavoriteDockRowsPerPage;
+              (rowCount + pageRows - 1) ~/
+              pageRows;
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: List.generate(pageCount, (page) {
@@ -96,10 +99,10 @@ class CategoryCleanRow extends StatelessWidget {
               // remain reachable by scrolling rather than being discarded.
               return Builder(
                 builder: (pageContext) {
-                  final firstRow = page * kFavoriteDockRowsPerPage;
+                  final firstRow = page * pageRows;
                   final rowsInPage = min(
                     rowCount - firstRow,
-                    kFavoriteDockRowsPerPage,
+                    pageRows,
                   );
                   return Column(
                     mainAxisSize: MainAxisSize.min,

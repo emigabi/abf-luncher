@@ -32,14 +32,13 @@ import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/widgets/app_card.dart';
 import 'package:flauncher/widgets/cached_blur_backdrop.dart';
 import 'package:flauncher/widgets/category_clean_row.dart';
-import 'package:flauncher/widgets/category_row.dart';
+import 'package:flauncher/widgets/all_apps_drawer.dart';
 import 'package:flauncher/widgets/dock_contour_painter.dart';
 import 'package:flauncher/widgets/launcher_alternative_view.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flauncher/widgets/wallpaper_video_background.dart';
 import 'package:flauncher/widgets/watch_next_row.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
@@ -49,7 +48,7 @@ import 'models/category.dart';
 const _kDockOuterPadding = EdgeInsets.only(
   left: kLauncherSectionHorizontalPadding,
   right: kLauncherSectionHorizontalPadding,
-  top: 10,
+  top: 0,
   bottom: 16,
 );
 
@@ -62,8 +61,7 @@ class FLauncher extends StatefulWidget {
 
 class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
   final GlobalKey<FocusAwareAppBarState> _appBarKey = GlobalKey();
-  final ScrollController _scrollController = ScrollController();
-  final GlobalKey _dockKey = GlobalKey();
+  final ScrollController _favoritesScrollController = ScrollController();
   late final _HeroBackdropBaker _heroBackdropBaker = _HeroBackdropBaker();
 
   @override
@@ -75,7 +73,7 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _scrollController.dispose();
+    _favoritesScrollController.dispose();
     _heroBackdropBaker.dispose();
     super.dispose();
   }
@@ -90,6 +88,9 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) => Actions(
     actions: <Type, Action<Intent>>{
+      ToggleAllAppsIntent: CallbackAction<ToggleAllAppsIntent>(
+        onInvoke: (_) => _toggleAllApps(),
+      ),
       MoveFocusToSettingsIntent: CallbackAction<MoveFocusToSettingsIntent>(
         onInvoke: (_) => _appBarKey.currentState?.focusSettings(),
       ),
@@ -99,10 +100,11 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
       child: Stack(
         children: [
           RepaintBoundary(
-            child: Consumer3<WallpaperService, SettingsService, WatchNextService>(
-              builder: (_, wallpaperService, settingsService, watchNextService, __) {
+            child: Consumer4<WallpaperService, SettingsService, WatchNextService, LauncherState>(
+              builder: (_, wallpaperService, settingsService, watchNextService, launcherState, __) {
                 final author = wallpaperService.slideshowAuthor;
-                final isBigPicture = settingsService.showWatchNextSection && settingsService.watchNextBigPictureMode;
+                final isBigPicture = settingsService.showWatchNextSection &&
+                    settingsService.watchNextBigPictureMode && !launcherState.allAppsExpanded;
                 final activeItem = isBigPicture ? watchNextService.activeHeroItem : null;
                 final heroUri = isBigPicture ? watchNextService.getPosterUriForItem(activeItem) : null;
                 final heroBytes = isBigPicture ? watchNextService.getCachedPoster(heroUri) : null;
@@ -216,19 +218,28 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
             child: Scaffold(
               backgroundColor: Colors.transparent,
               appBar: FocusAwareAppBar(key: _appBarKey),
-              // (initialized (data.$1), layoutVersion (data.$2), showAppNamesBelowIcons (data.$3))
-              body: Selector2<AppsService, SettingsService, (bool, int, bool, double)>(
-                selector: (_, appsService, settingsService) =>
-                    (appsService.initialized, appsService.layoutVersion,
-                     settingsService.showAppNamesBelowIcons, settingsService.favoriteIconScale),
-                builder: (context, data, _) {
-                  if (data.$1) {
-                    return _tvOSLayout(context, context.read<AppsService>(),
-                        showAppNames: data.$3, iconScale: data.$4);
-                  } else {
-                    return _emptyState(context);
-                  }
-                },
+              body: Selector3<AppsService, SettingsService, LauncherState,
+                  ({bool initialized, int layoutVersion, bool showNames, double iconScale,
+                    bool appsExpanded, bool showWatchNext, bool bigPicture})>(
+                selector: (_, apps, settings, state) => (
+                  initialized: apps.initialized,
+                  layoutVersion: apps.layoutVersion,
+                  showNames: settings.showAppNamesBelowIcons,
+                  iconScale: settings.favoriteIconScale,
+                  appsExpanded: state.allAppsExpanded,
+                  showWatchNext: settings.showWatchNextSection,
+                  bigPicture: settings.watchNextBigPictureMode,
+                ),
+                builder: (context, data, _) => data.initialized
+                    ? _tvOSLayout(
+                        context,
+                        context.read<AppsService>(),
+                        showAppNames: data.showNames,
+                        iconScale: data.iconScale,
+                        appsExpanded: data.appsExpanded,
+                        showWatchNext: data.showWatchNext,
+                      )
+                    : _emptyState(context),
               ),
             ),
           ),
@@ -241,314 +252,104 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
     context.read<LauncherState>().setAppGridFocused(focused);
   }
 
-  void _onAppGridFocused({VoidCallback? onFirstSectionFocused}) {
-    _setAppGridFocused(true);
-    onFirstSectionFocused?.call();
+  void _onAppGridFocused() => _setAppGridFocused(true);
+
+  void _onHomeSectionFocused() => _setAppGridFocused(false);
+
+  void _toggleAllApps() {
+    context.read<LauncherState>().toggleAllApps();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _appBarKey.currentState?.focusAllApps();
+    });
   }
 
-  void _onHomeSectionFocused() {
-    _setAppGridFocused(false);
-  }
-
-  Widget _tvOSLayout(BuildContext context, AppsService appsService,
-      {required bool showAppNames, required double iconScale}) {
+  Widget _tvOSLayout(BuildContext context, AppsService appsService, {
+    required bool showAppNames,
+    required double iconScale,
+    required bool appsExpanded,
+    required bool showWatchNext,
+  }) {
     final favoritesCategory = appsService.categories.firstWhereOrNull((c) => c.name == 'Favorites');
-    final favoriteApps = favoritesCategory?.applications ?? const [];
+    final favoriteApps = favoritesCategory?.applications ?? const <App>[];
+    final otherApps = appsOutsideFavorites(appsService.applications, favoriteApps);
 
-    final otherSections =
-        appsService.launcherSections.where((section) {
-          if (section is Category && section.name == 'Favorites') return false;
-          return true;
-        }).toList();
+    return LayoutBuilder(builder: (context, constraints) {
+      final scale = normalizedFavoriteIconScale(iconScale);
+      final rowHeight = appCardRowExtentFromContentWidth(
+        constraints.maxWidth - _kDockOuterPadding.horizontal,
+        columnCount: kFavoriteDockColumns,
+      ) * scale + (showAppNames ? kAppNameLabelHeight : 0);
+      final visibleRows = visibleFavoriteDockRows(
+        favoriteApps.length,
+        columns: favoriteDockColumnsForScale(scale),
+      );
+      const dockInnerPadding = 10.0;
+      final dockPadding = _kDockOuterPadding.vertical + dockInnerPadding;
+      final desiredDockHeight = visibleRows * rowHeight + dockPadding;
+      final maxDockHeight = max(0.0,
+          constraints.maxHeight - min(180.0, constraints.maxHeight * 0.45));
+      final dockHeight = min(desiredDockHeight, maxDockHeight);
+      final rowsPerPage = max(1,
+          min(kFavoriteDockRowsPerPage, ((dockHeight - dockPadding) / rowHeight).floor()));
 
-    final showWatchNextSection = context.select<SettingsService, bool>((s) => s.showWatchNextSection);
-    final watchNextBigPicture = context.select<SettingsService, bool>((s) => s.watchNextBigPictureMode);
-    final watchNextVisible = context.select<WatchNextService, bool>((s) => s.hasVisibleSection);
-    final reserveWatchNextSpace = showWatchNextSection && watchNextVisible;
-
-    if (favoriteApps.isEmpty && otherSections.isEmpty) return _emptyState(context);
-
-    final watchNextSpace = watchNextBigPicture ? 385 : 410;
-    final scale = normalizedFavoriteIconScale(iconScale);
-    final dockRows = visibleFavoriteDockRows(favoriteApps.length,
-        columns: favoriteDockColumnsForScale(scale));
-    final originalDockRowHeight = appCardRowExtentFromContentWidth(
-      MediaQuery.sizeOf(context).width - _kDockOuterPadding.horizontal,
-      columnCount: kFavoriteDockColumns,
-    );
-    final dockRowHeight = originalDockRowHeight * scale +
-        (showAppNames ? kAppNameLabelHeight : 0);
-    final extraDockHeight = dockRows == 0 ? 0.0 :
-        dockRows * dockRowHeight - originalDockRowHeight;
-
-    return CustomScrollView(
-      controller: _scrollController,
-      slivers: [
-        if (favoriteApps.isNotEmpty || showWatchNextSection) ...[
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: max(0.0,
-                  MediaQuery.of(context).size.height -
-                  MediaQuery.of(context).padding.top -
-                  kToolbarHeight -
-                  (reserveWatchNextSpace ? watchNextSpace : 150) - extraDockHeight),
-            ),
-          ),
-          if (showWatchNextSection)
-            SliverToBoxAdapter(
-              child: RepaintBoundary(
-                child: WatchNextRow(
-                  isFirstSection: false,
-                  isAboveDock: true,
-                  onItemFocused: _onHomeSectionFocused,
-                ),
-              ),
-            ),
+      return Column(
+        children: [
           if (favoriteApps.isNotEmpty)
-            SliverToBoxAdapter(
-              child: KeyedSubtree(
-                key: _dockKey,
+            SizedBox(
+              height: dockHeight,
+              child: SingleChildScrollView(
+                key: const Key('favorites_scroll'),
+                controller: _favoritesScrollController,
                 child: Padding(
                   padding: _kDockOuterPadding,
                   child: _dock(
-                    context,
-                    favoritesCategory!,
-                    favoriteApps,
-                    appsService,
-                    handleUpNavigationToSettings: !reserveWatchNextSpace,
+                    context, favoritesCategory!, favoriteApps,
+                    handleUpNavigationToSettings: true,
+                    rowsPerPage: rowsPerPage,
                   ),
                 ),
               ),
             ),
-        ],
-        ..._buildSectionSlivers(
-          otherSections,
-          firstCategoryAlreadyFound: favoriteApps.isNotEmpty,
-          showAppNames: showAppNames,
-          onFirstSectionFocused: favoriteApps.isNotEmpty ? _scrollDockToTop : null,
-        ),
-        SliverToBoxAdapter(child: SizedBox(height: _bottomScrollPadding(context, hasDock: favoriteApps.isNotEmpty))),
-      ],
-    );
-  }
-
-  double _bottomScrollPadding(BuildContext context, {required bool hasDock}) {
-    if (!hasDock) {
-      return 64;
-    }
-    return MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - kToolbarHeight;
-  }
-
-  List<Widget> _buildSectionSlivers(
-    List<LauncherSection> sections, {
-    bool firstCategoryAlreadyFound = false,
-    required bool showAppNames,
-    VoidCallback? onFirstSectionFocused,
-  }) {
-    final List<Widget> slivers = [];
-    bool firstCategoryFound = firstCategoryAlreadyFound;
-    bool firstBuiltSectionFound = false;
-
-    for (final section in sections) {
-      final Key sectionKey = Key(section.id.toString());
-
-      if (section is LauncherSpacer) {
-        slivers.add(SliverToBoxAdapter(key: sectionKey, child: SizedBox(height: section.height.toDouble())));
-        continue;
-      }
-
-      final category = section as Category;
-      final filteredApps = category.applications;
-      if (filteredApps.isEmpty) continue;
-
-      final bool isFirstSection = !firstCategoryFound;
-      if (isFirstSection) firstCategoryFound = true;
-      final onAppFocused = !firstBuiltSectionFound
-          ? () => _onAppGridFocused(onFirstSectionFocused: onFirstSectionFocused)
-          : () => _onAppGridFocused();
-      firstBuiltSectionFound = true;
-
-      slivers.add(
-        SliverToBoxAdapter(
-          child: Selector<SettingsService, bool>(
-            selector: (context, service) => service.showCategoryTitles,
-            builder: (context, showTitle, _) {
-              if (showTitle) {
-                return Padding(
-                  padding: const EdgeInsets.only(left: 40, bottom: 8, top: 8),
-                  child: Text(
-                    category.name,
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      shadows: const [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)],
-                    ),
-                  ),
-                );
-              }
-              return const SizedBox.shrink();
-            },
+          Expanded(
+            child: appsExpanded
+                ? AllAppsDrawer(
+                    applications: otherApps,
+                    hasFavorites: favoriteApps.isNotEmpty,
+                    onAppFocused: _onAppGridFocused,
+                  )
+                : showWatchNext
+                    ? CustomScrollView(
+                        key: const Key('watch_next_panel'),
+                        primary: false,
+                        slivers: [
+                          SliverToBoxAdapter(
+                            child: WatchNextRow(
+                              isFirstSection: favoriteApps.isEmpty,
+                              isAboveDock: favoriteApps.isEmpty,
+                              onItemFocused: _onHomeSectionFocused,
+                            ),
+                          ),
+                        ],
+                      )
+                    : const SizedBox.expand(),
           ),
-        ),
+        ],
       );
-
-      switch (category.type) {
-        case CategoryType.row:
-          slivers.add(
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: kLauncherSectionHorizontalPadding,
-                  right: kLauncherSectionHorizontalPadding,
-                  bottom: 8,
-                ),
-                child: CategoryRow(
-                  key: sectionKey,
-                  category: category,
-                  applications: filteredApps,
-                  isFirstSection: isFirstSection,
-                  showTitle: false,
-                  onAppFocused: onAppFocused,
-                ),
-              ),
-            ),
-          );
-          break;
-        case CategoryType.grid:
-          final gridContentWidth = MediaQuery.sizeOf(context).width - 2 * kLauncherSectionHorizontalPadding;
-          final gridAspectRatio = showAppNames
-              ? appCardGridAspectRatio(gridContentWidth, category.columnsCount)
-              : kAppCardAspectRatio;
-          slivers.add(
-            SliverPadding(
-              padding: const EdgeInsets.only(
-                left: kLauncherSectionHorizontalPadding,
-                right: kLauncherSectionHorizontalPadding,
-                bottom: 8,
-              ),
-              sliver: SliverGrid(
-                key: sectionKey,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: category.columnsCount,
-                  childAspectRatio: gridAspectRatio,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 0,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  childCount: filteredApps.length,
-                  findChildIndexCallback: (Key key) {
-                    final valueKey = key as ValueKey<String>;
-                    final index = filteredApps.indexWhere((app) => app.packageName == valueKey.value);
-                    return index >= 0 ? index : null;
-                  },
-                  (context, index) => Padding(
-                    key: Key(filteredApps[index].packageName),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: kAppCardHorizontalPadding,
-                      vertical: kAppCardVerticalPadding,
-                    ),
-                    child: AppCard(
-                      category: category,
-                      application: filteredApps[index],
-                      autofocus: index == 0,
-                      handleUpNavigationToSettings: isFirstSection && index < category.columnsCount,
-                      enforceAspectRatio: false,
-                      onFocused: index < category.columnsCount ? onAppFocused : null,
-                      ensureVisibleOnFocus: onAppFocused == null || index >= category.columnsCount,
-                      onlyScrollWhenNearBottom: true,
-                      onMove: (direction) => _onGridMove(context, category, index, direction, filteredApps),
-                      onMoveEnd: () => context.read<AppsService>().saveApplicationOrderInCategory(category),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
-          break;
-      }
-    }
-
-    return slivers;
-  }
-
-  Future<void> _scrollDockToTop() async {
-    final targetOffset = _dockTopScrollOffset();
-    if (targetOffset == null) {
-      return;
-    }
-
-    final position = _scrollController.position;
-    if ((targetOffset - position.pixels).abs() < 16) {
-      return;
-    }
-
-    await _scrollController.animateTo(
-      targetOffset,
-      duration: const Duration(milliseconds: 260),
-      curve: Curves.easeInOutCubic,
-    );
-  }
-
-  double? _dockTopScrollOffset() {
-    final dockContext = _dockKey.currentContext;
-    final renderObject = dockContext?.findRenderObject();
-    if (!_scrollController.hasClients || renderObject == null) {
-      return null;
-    }
-
-    final viewport = RenderAbstractViewport.of(renderObject);
-    final position = _scrollController.position;
-    return viewport.getOffsetToReveal(renderObject, 0).offset.clamp(position.minScrollExtent, position.maxScrollExtent);
-  }
-
-  // TO DO : refractor duplicate _onMove code
-  void _onGridMove(
-    BuildContext context,
-    Category category,
-    int index,
-    AxisDirection direction,
-    List<App> filteredApps,
-  ) {
-    final currentRow = (index / category.columnsCount).floor();
-    final totalRows = ((filteredApps.length - 1) / category.columnsCount).floor();
-
-    int? newIndex;
-    switch (direction) {
-      case AxisDirection.up:
-        if (currentRow > 0) newIndex = index - category.columnsCount;
-        break;
-      case AxisDirection.right:
-        if (index < filteredApps.length - 1) newIndex = index + 1;
-        break;
-      case AxisDirection.down:
-        if (currentRow < totalRows) newIndex = min(index + category.columnsCount, filteredApps.length - 1);
-        break;
-      case AxisDirection.left:
-        if (index > 0) newIndex = index - 1;
-        break;
-    }
-
-    if (newIndex != null) {
-      final appsService = context.read<AppsService>();
-      final movingApp = filteredApps[index];
-      final realOldIndex = category.applications.indexOf(movingApp);
-      final realNewIndex = category.applications.indexOf(filteredApps[newIndex]);
-      if (realOldIndex >= 0 && realNewIndex >= 0) {
-        appsService.reorderApplication(category, realOldIndex, realNewIndex);
-        appsService.setPendingReorderFocus(movingApp.packageName, category.id);
-      }
-    }
+    });
   }
 
   Widget _dock(
     BuildContext context,
     Category category,
-    List<App> apps,
-    AppsService appsService, {
+    List<App> apps, {
     required bool handleUpNavigationToSettings,
+    required int rowsPerPage,
   }) {
     final backdropDisabled = context.select<SettingsService, bool>((s) => s.dockBackdropFilterDisabled);
     final darkBackground = context.select<SettingsService, bool>((s) => s.dockDarkBackground);
     final shadowEnabled = context.select<SettingsService, bool>((s) => s.dockShadowEnabled);
-    final isBigPicture = context.select<SettingsService, bool>((s) => s.showWatchNextSection && s.watchNextBigPictureMode);
+    final appsExpanded = context.select<LauncherState, bool>((s) => s.allAppsExpanded);
+    final isBigPicture = !appsExpanded && context.select<SettingsService, bool>((s) => s.showWatchNextSection && s.watchNextBigPictureMode);
 
     const dockBorderRadius = 24.0;
     final borderRadius = BorderRadius.circular(dockBorderRadius);
@@ -567,6 +368,7 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
           category: category,
           applications: apps,
           isFirstSection: handleUpNavigationToSettings,
+          rowsPerPage: rowsPerPage,
           scrollAlignment: 1.0,
           onAppFocused: _onHomeSectionFocused,
         ),

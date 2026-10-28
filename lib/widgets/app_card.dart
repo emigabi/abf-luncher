@@ -67,6 +67,7 @@ class AppCard extends StatefulWidget {
   final VoidCallback? onFocused;
   final bool ensureVisibleOnFocus;
   final bool onlyScrollWhenNearBottom;
+  final bool categoryActionsEnabled;
 
   const AppCard({
     super.key,
@@ -81,6 +82,7 @@ class AppCard extends StatefulWidget {
     this.onFocused,
     this.ensureVisibleOnFocus = true,
     this.onlyScrollWhenNearBottom = false,
+    this.categoryActionsEnabled = true,
   });
 
   @override
@@ -611,7 +613,10 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   Future<void> _showPanel() async {
     final result = await showDialog<ApplicationInfoPanelResult>(
       context: context,
-      builder: (context) => ApplicationInfoPanel(category: widget.category, application: widget.application),
+      builder: (context) => ApplicationInfoPanel(
+        category: widget.categoryActionsEnabled ? widget.category : null,
+        application: widget.application,
+      ),
     );
     if (result == ApplicationInfoPanelResult.reorderApp) {
       setState(() => _moving = true);

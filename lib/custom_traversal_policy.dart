@@ -51,7 +51,13 @@ class RowByRowTraversalPolicy extends FocusTraversalPolicy with DirectionalFocus
       return candidates;
     }
 
-    return candidates.where((candidate) => _verticalScrollableOf(candidate.node) == currentScrollable).toList();
+    final samePanel = candidates
+        .where((candidate) => _verticalScrollableOf(candidate.node) == currentScrollable)
+        .toList();
+    if (samePanel.isNotEmpty) return samePanel;
+    // At the edge of the pinned Favourites pane, allow the next pane below
+    // (Watch Next or All Apps), and allow returning to Favourites from it.
+    return candidates.where((candidate) => _verticalScrollableOf(candidate.node) != null).toList();
   }
 
   bool _isInsideVerticalScrollable(FocusNode node) => _verticalScrollableOf(node) != null;

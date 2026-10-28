@@ -1,4 +1,5 @@
 import 'package:flauncher/widgets/settings/settings_panel.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,18 +28,23 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
 {
   bool focused = false;
   late FocusNode _settingsFocusNode;
+  late FocusNode _allAppsFocusNode;
 
   @override
   void initState() {
     super.initState();
     _settingsFocusNode = FocusNode();
+    _allAppsFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
     _settingsFocusNode.dispose();
+    _allAppsFocusNode.dispose();
     super.dispose();
   }
+
+  void focusAllApps() => _allAppsFocusNode.requestFocus();
 
   void focusSettings() {
     _settingsFocusNode.requestFocus();
@@ -125,6 +131,35 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
                       ),
                     )
                   : const SizedBox.shrink(),
+              ),
+              Selector<LauncherState, bool>(
+                selector: (_, state) => state.allAppsExpanded,
+                builder: (context, expanded, _) {
+                  final localizations = AppLocalizations.of(context)!;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Tooltip(
+                      message: expanded ? localizations.hideAllApps : localizations.showAllApps,
+                      child: AppBarFocusRing(
+                        key: const Key('all_apps_toggle'),
+                        focusNode: _allAppsFocusNode,
+                        onPressed: () {
+                          context.read<LauncherState>().toggleAllApps();
+                          _allAppsFocusNode.requestFocus();
+                        },
+                        semanticLabel: expanded ? localizations.hideAllApps : localizations.showAllApps,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(expanded ? Icons.tab : Icons.tab_outlined, size: 20, color: Colors.white),
+                            const SizedBox(width: 6),
+                            Text(localizations.allApps, style: const TextStyle(color: Colors.white, fontSize: 12)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
               // WiFi usage widget
               Selector<SettingsService, bool>(

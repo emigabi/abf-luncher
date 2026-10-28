@@ -69,6 +69,10 @@ class MoveFocusToSettingsIntent extends Intent {
   const MoveFocusToSettingsIntent();
 }
 
+class ToggleAllAppsIntent extends Intent {
+  const ToggleAllAppsIntent();
+}
+
 class BackIntent extends Intent {
   const BackIntent();
 }

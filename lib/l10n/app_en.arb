@@ -362,5 +362,9 @@
           "type": "String"
         }
       }
-    }
+    },
+  "allApps": "All apps",
+  "showAllApps": "Show other apps",
+  "hideAllApps": "Hide other apps",
+  "noOtherApps": "No other apps to show"
 }

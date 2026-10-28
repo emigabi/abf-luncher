@@ -785,4 +785,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String favoriteIconSizeValue(int percent, int columns) {
     return '$percent% ($columns per row)';
   }
+
+  @override
+  String get allApps => 'Todas las apps';
+
+  @override
+  String get showAllApps => 'Mostrar otras apps';
+
+  @override
+  String get hideAllApps => 'Ocultar otras apps';
+
+  @override
+  String get noOtherApps => 'No hay otras apps para mostrar';
 }

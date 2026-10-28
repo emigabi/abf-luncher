@@ -1,4 +1,5 @@
 import 'package:flauncher/providers/launcher_state.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,8 @@ void main() {
           ChangeNotifierProvider<LauncherState>.value(value: launcherState),
         ],
         child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             appBar: FocusAwareAppBar(key: appBarKey),
             body: const SizedBox.expand(),
